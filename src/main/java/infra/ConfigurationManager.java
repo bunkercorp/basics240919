@@ -13,7 +13,7 @@ class ConfigurationManager {
 
     public static ConfigurationManager getInstance(){
         if (instance == null)
-            instance = new ConfigurationManager("Browser", "env");
+            instance = new ConfigurationManager("login", "password");
         return instance;
     }
 
