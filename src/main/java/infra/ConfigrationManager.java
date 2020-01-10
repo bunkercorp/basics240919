@@ -6,9 +6,9 @@ class ConfigrationManager {
     private String password;
 
     private static String LOGIN = "login";
-    private static String PASSWORD ="password";
-    private static String JIRA_USER ="jiraUser";
-    private static String JIRA_PWD ="jiraPwd";
+    private static String PASSWORD = "password";
+    private static String JIRA_USER = "jiraUser";
+    private static String JIRA_PWD = "jiraPwd";
 
     private ConfigrationManager(String login, String password) {
         login = login;
@@ -16,8 +16,11 @@ class ConfigrationManager {
     }
 
     public static ConfigrationManager getInstance() {
-        if (instance == null) ;
-        instance = new ConfigrationManager(LOGIN, PASSWORD);
+        if (instance == null) {
+            synchronized (ConfigrationManager.class) {
+                instance = new ConfigrationManager(LOGIN, PASSWORD);
+            }
+        }
         return instance;
     }
 
