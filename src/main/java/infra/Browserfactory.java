@@ -24,10 +24,10 @@ public class Browserfactory {
             }
 
             driver.manage().window().maximize();
-            driver.get("http://google.com.ua/search?q=How+to+rule+the+world+without+being+noticed+by+nurses");
-            ((JavascriptExecutor) driver).executeScript("(()=> alert('Hello there!'))()");
-            driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-            driver.switchTo().alert().dismiss();
+//            driver.get("http://google.com.ua/search?q=How+to+rule+the+world+without+being+noticed+by+nurses");
+//            ((JavascriptExecutor) driver).executeScript("(()=> alert('Hello there!'))()");
+//            driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+//            driver.switchTo().alert().dismiss();
         }
         return driver;
     }
