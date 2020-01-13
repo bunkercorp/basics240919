@@ -26,7 +26,7 @@ public class SomeClass {
         driver.manage().window().maximize();
         driver.get("https://jira.hillel.it/browse/AQA919-5");
         LoginPage.login(driver);
-        Thread.sleep(200);
+        Thread.sleep(300);
 
         //assign ticket to current user
         String assignXpath = "//a[@id='assign-to-me']";
