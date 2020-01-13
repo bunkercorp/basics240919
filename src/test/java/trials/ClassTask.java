@@ -35,38 +35,34 @@ public class ClassTask {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='priority-single-select']/span"))).click();
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"priority-form\"]/div[2]/button[1]"))).click();
+        Thread.sleep(1000);
 
         Actions builder = new Actions(driver);
         WebElement element = driver.findElement(By.cssSelector("#wrap-labels > div[title='Click to edit']"));
         builder.moveToElement(element).build().perform();
 
-        WebElement howerlement = driver.findElement(By.cssSelector("div#wrap-labels  .aui-icon.aui-icon-small.aui-iconfont-edit"));
-        howerlement.click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div#wrap-labels  .aui-icon.aui-icon-small.aui-iconfont-edit"))).click();
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html//textarea[@id='labels-textarea']"))).sendKeys("test3");
-        Thread.sleep(2000);
 
         driver.findElement(By.xpath("/html//textarea[@id='labels-textarea']")).sendKeys(Keys.RETURN);
 
         driver.findElement(By.cssSelector(".aui-icon.aui-icon-small.aui-iconfont-success")).click();
         Thread.sleep(5000);
 
-        builder = new Actions(driver);
-        element = driver.findElement(By.cssSelector("#wrap-labels > div[title='Click to edit']"));
-        builder.moveToElement(element).build().perform();
 
-        howerlement = driver.findElement(By.cssSelector("div#wrap-labels  .aui-icon.aui-icon-small.aui-iconfont-edit"));
-        howerlement.click();
-
-        Thread.sleep(5000);
-        List<WebElement> lables = driver.findElements(By.className("value-item"));
+        List<WebElement> lables = driver.findElements(By.className("lozenge"));
         for (WebElement labl : lables) {
             System.out.println(labl.getText());
-            Thread.sleep(40000);
 
+//            builder = new Actions(driver);
+//            element = driver.findElement(By.cssSelector("div#description-val > .aui-icon.aui-icon-small.aui-iconfont-edit"));
+//            builder.moveToElement(element).build().perform();
 
-            driver.findElement(By.cssSelector(".aui-icon.aui-icon-small.aui-iconfont-success")).click();
+            driver.findElement(By.xpath("//div[@id='description-val']//em[.='Click to add description']")).click();
+            Thread.sleep(3000);
 
+           // wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"tinymce\"]/p/body"))).sendKeys("Test comment");
 
 
 

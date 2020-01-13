@@ -4,7 +4,7 @@
 <suite name = "HW1">
     <test name = "hw1">
         <classes>
-            <class name = "trials.ReleasesTab"/>
+            <class name = "trials.ClassTask"/>
         </classes>
     </test>
 </suite>
