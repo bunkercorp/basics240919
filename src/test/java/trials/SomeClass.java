@@ -20,7 +20,6 @@ public class SomeClass {
         final WebDriver driver = Browserfactory.getDriver(Browser.CHROME);
         final JavascriptExecutor jexec = (JavascriptExecutor) driver;
         final String initialTab = driver.getWindowHandle();
-
         // jexec.executeScript("window.open('about:blank', '_blank', 'top:500')");
         //jexec.executeScript("window.open('about:blank')");
 //        final String newWindow = driver

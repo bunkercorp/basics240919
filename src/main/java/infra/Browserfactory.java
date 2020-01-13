@@ -22,9 +22,9 @@ public class Browserfactory {
                     //FIXME
                     break;
             }
-
+            //http://google.com.ua/search?q=How+to+rule+the+world+without+being+noticed+by+nurses
             driver.manage().window().maximize();
-            driver.get("http://google.com.ua/search?q=How+to+rule+the+world+without+being+noticed+by+nurses");
+            driver.get("https://jira.hillel.it/browse/AQA919-4");
             ((JavascriptExecutor) driver).executeScript("(()=> alert('Hello there!'))()");
             driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
             driver.switchTo().alert().dismiss();
