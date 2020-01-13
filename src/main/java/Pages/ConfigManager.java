@@ -23,7 +23,6 @@ public class ConfigManager {
     }
 
     public String getUserPwd() {
-
         return userPwd;
     }
 }

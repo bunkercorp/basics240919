@@ -6,6 +6,7 @@ import org.openqa.selenium.WebElement;
 
 public class LoginPage {
     public static void login(WebDriver driver) {
+
         String xpathUserName = "//input[@id='login-form-username']";
         WebElement inputField = driver.findElement(By.xpath(xpathUserName));
         inputField.sendKeys(ConfigManager.getInstance().getUserName());
