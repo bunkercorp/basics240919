@@ -3,12 +3,12 @@ package trials;
 import infra.Browser;
 import infra.Browserfactory;
 import infra.LoginPage;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
 
 public class FirstJiraTest {
     @Test
@@ -20,6 +20,7 @@ public class FirstJiraTest {
         AssignButton.click();
         String assignee = driver.findElement(By.xpath("// *[@id=\"issue_summary_assignee_tatiana.khoroshko\"]")).getText();//get text
         Assert.assertEquals( assignee ,"Tatiana.Khoroshko" );
+
     }
 
 
