@@ -115,7 +115,6 @@ public class SomeClass {
         String urlTrue = "https://jira.hillel.it/projects/AQA919?selectedItem=com.atlassian.jira.jira-projects-plugin:release-page";
         Assert.assertEquals(url, urlTrue);
 
-
         //Thread.sleep(3000);
         // driver.switchTo().window(initialTab);
         // driver.close();
