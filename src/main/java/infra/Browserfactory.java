@@ -23,6 +23,7 @@ public class Browserfactory {
                     break;
             }
             //http://google.com.ua/search?q=How+to+rule+the+world+without+being+noticed+by+nurses
+
             driver.manage().window().maximize();
             driver.get("https://jira.hillel.it/browse/AQA919-4");
             ((JavascriptExecutor) driver).executeScript("(()=> alert('Hello there!'))()");
