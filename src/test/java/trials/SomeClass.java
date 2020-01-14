@@ -10,8 +10,12 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +24,7 @@ public class SomeClass {
     public void firstTest() throws InterruptedException {
         final WebDriver driver = Browserfactory.getDriver(Browser.CHROME);
         final JavascriptExecutor jexec = (JavascriptExecutor) driver;
-        final String intialTab = driver.getWindowHandle();
+        final String initialTab = driver.getWindowHandle();
 
         //login
         driver.manage().window().maximize();
@@ -37,10 +41,13 @@ public class SomeClass {
 
         //check assignee pop-up msg
         String popupAssigneeXpath = "//div[@class = 'aui-message closeable aui-message-success aui-will-close']";
-        WebElement popupAssignee = driver.findElement(By.xpath(popupAssigneeXpath));
+        driver.findElement(By.xpath(popupAssigneeXpath)).getText();
+        Assert.assertEquals("AQA919-5 has been assigned.","AQA919-5 has been assigned.");
 
-        if (popupAssignee.getText().equals("AQA919-5 has been assigned."))
-            System.out.println("Ticket assigned successfully!");
+        String assigneeUser = driver.findElement(By.xpath
+                ("//*[@id='issue_summary_assignee_Andrey']")).getText();
+        Assert.assertEquals(assigneeUser,"AndreyMaydanyuk");
+
 
         driver.quit();
 
