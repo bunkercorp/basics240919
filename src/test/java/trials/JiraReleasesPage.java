@@ -17,7 +17,7 @@ public class JiraReleasesPage {
     @Test
     public void firstTest() throws InterruptedException {
         final WebDriver driver = Browserfactory.getDriver(Browser.CHROME);
-        driver.get("https://jira.hillel.it/browse/AQA919-2");
+        driver.get("https://jira.hillel.it/browse/AQA919-7");
         LoginPage.login(driver);
         WebDriverWait wait = new WebDriverWait(driver, 20);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Releases")));
