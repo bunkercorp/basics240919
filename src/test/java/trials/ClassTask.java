@@ -1,5 +1,4 @@
 package trials;
-
 import infra.Browser;
 import infra.Browserfactory;
 import infra.LoginPage;
@@ -11,7 +10,6 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.Test;
-
 import java.util.List;
 
 public class ClassTask {
@@ -22,7 +20,6 @@ public class ClassTask {
         LoginPage.login(driver);
 
         driver.findElement(By.xpath("//*[@id=\"priority-val\"]")).click();
-
 
         WebDriverWait wait = new WebDriverWait(driver, 20);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"priority-val\"]"))).getText();
@@ -49,22 +46,21 @@ public class ClassTask {
 
         driver.findElement(By.cssSelector(".aui-icon.aui-icon-small.aui-iconfont-success")).click();
         Thread.sleep(5000);
-
-
+        
         List<WebElement> lables = driver.findElements(By.className("lozenge"));
         for (WebElement labl : lables) {
             System.out.println(labl.getText());
 
-//            builder = new Actions(driver);
-//            element = driver.findElement(By.cssSelector("div#description-val > .aui-icon.aui-icon-small.aui-iconfont-edit"));
-//            builder.moveToElement(element).build().perform();
+           driver.findElement(By.xpath("//div[@id='description-val']//em[.='Click to add description']")).click();
 
-            driver.findElement(By.xpath("//div[@id='description-val']//em[.='Click to add description']")).click();
-            Thread.sleep(3000);
-
-           // wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"tinymce\"]/p/body"))).sendKeys("Test comment");
+            driver.findElement(By.xpath("//*[@id=\"description-wiki-edit\"]/nav/div/div/ul/li[2]/a")).click();
 
 
+            driver.findElement(By.xpath("/html//textarea[@id='description']")).sendKeys("Test comment");
+
+
+
+           driver.quit();
 
 
         }

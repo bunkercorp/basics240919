@@ -24,7 +24,6 @@ public class ReleasesTab {
         for (String Handle : driver.getWindowHandles()) {
             driver.switchTo().window(Handle);
         }
-
         WebDriverWait wait = new WebDriverWait(driver, 20);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Releases"))).getText();
         Assert.assertEquals("Releases", "Releases");
