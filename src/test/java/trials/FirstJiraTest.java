@@ -18,7 +18,7 @@ public class FirstJiraTest {
         LoginPage.login(driver);  //login
         WebElement AssignButton = driver.findElement(By.xpath("//a[@id='assign-to-me']"));
         AssignButton.click();
-        String assignee = driver.findElement(By.xpath("// *[@id=\"issue_summary_assignee_tatiana.khoroshko\"]")).getText();//get text
+        String assignee = driver.findElement(By.xpath("//*[@id=\"issue_summary_assignee_tatiana.khoroshko\"]")).getText();//get text
         Assert.assertEquals( assignee ,"Tatiana.Khoroshko" );
 
     }
