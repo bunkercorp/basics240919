@@ -11,9 +11,11 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.net.MalformedURLException;
+
 public class ReleasesTab {
     @Test
-    public void firstTest() throws InterruptedException {
+    public void firstTest() throws InterruptedException, MalformedURLException {
         final WebDriver driver = Browserfactory.getDriver(Browser.CHROME);
         driver.get("https://jira.hillel.it/browse/AQA919-2");
         LoginPage.login(driver);

@@ -7,9 +7,11 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.Test;
 
+import java.net.MalformedURLException;
+
 public class SomeClass {
     @Test
-    public void firstTest() throws InterruptedException {
+    public void firstTest() throws InterruptedException, MalformedURLException {
         final WebDriver driver = Browserfactory.getDriver((Browser.CHROME));
         final JavascriptExecutor jexec = (JavascriptExecutor) driver;
         final String initialTab = driver.getWindowHandle();
