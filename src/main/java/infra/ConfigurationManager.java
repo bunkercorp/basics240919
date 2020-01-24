@@ -1,7 +1,7 @@
 package infra;
 
-class ConfigrationManager {
-    private static ConfigrationManager instance;
+public class ConfigurationManager {
+    private static ConfigurationManager instance;
     private String login;
     private String password;
 
@@ -10,15 +10,15 @@ class ConfigrationManager {
     private static String JIRA_USER = "jiraUser";
     private static String JIRA_PWD = "jiraPwd";
 
-    private ConfigrationManager(String login, String password) {
+    private ConfigurationManager(String login, String password) {
         login = login;
         password = password;
     }
 
-    public static ConfigrationManager getInstance() {
+    public static ConfigurationManager getInstance() {
         if (instance == null) {
-            synchronized (ConfigrationManager.class) {
-                instance = new ConfigrationManager(LOGIN, PASSWORD);
+            synchronized (ConfigurationManager.class) {
+                instance = new ConfigurationManager(LOGIN, PASSWORD);
             }
         }
         return instance;

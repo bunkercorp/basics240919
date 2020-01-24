@@ -1,18 +1,30 @@
 package infra;
 
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 public class Browserfactory {
     private static WebDriver driver = null;
 
-    public static WebDriver getDriver(Browser browser) {
+    public static WebDriver getDriver(Browser browser) throws MalformedURLException {
         if (driver == null) {
+
+            String flag = System.getProperty("REMOTE_RUN");
+            boolean isRemoteRun =  flag != null && flag.toLowerCase().contentEquals("true");
             final OS currentOS = OS.current();
             final String binPath = String.format("%s/bin/%s%s", System.getProperty("user.dir"), browser.driverPathInBin, currentOS.driverFileNameEnding);
+            if(isRemoteRun){
+                Capabilities cap = new DesiredCapabilities();
+                driver =  new RemoteWebDriver(new URL("http://192.168.3.69:4444/wd/hub"), cap);
+            }else
             switch (browser) {
                 case CHROME:
                     System.setProperty("webdriver.chrome.driver", binPath);
