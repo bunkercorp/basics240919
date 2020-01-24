@@ -5,6 +5,13 @@
     <test name = "hw1">
         <classes>
             <class name = "trials.ClassTask"/>
+           <class name = "trials.ClassTask"/>
+         </classes>
+    </test>
+    <test name = "hw2">
+        <classes>
+            <class name = "trials.ClassTask"/>
+            <class name = "trials.ClassTask"/>
         </classes>
     </test>
 </suite>

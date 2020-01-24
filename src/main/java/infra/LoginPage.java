@@ -4,11 +4,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 public class LoginPage {
-
-
-//    final String username = "";
-//    final String password = "";
-
     public static void login(WebDriver driver) {
         final String username = ConfigrationManager.getInstance().getLogin();
         final String password = ConfigrationManager.getInstance().getPassword();
