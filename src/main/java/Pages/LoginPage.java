@@ -6,8 +6,8 @@ import org.openqa.selenium.WebElement;
 
 public class LoginPage {
     public static void login (WebDriver driver){
-        String jiraUser = System.getProperty("jirauser");
-        String jiraPwd = System.getProperty("jirapwd");
+        String jiraUser = System.getProperty("jiraUser");
+        String jiraPwd = System.getProperty("jiraPwd");
 
         String loginFieldXpath ="//input[@id='login-form-username']";
         WebElement loginField = driver.findElement(By.xpath(loginFieldXpath));

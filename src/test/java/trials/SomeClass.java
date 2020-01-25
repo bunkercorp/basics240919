@@ -40,6 +40,7 @@ public class SomeClass {
         Thread.sleep(1000);
 
         //check assignee pop-up msg
+        // Не работает. Возможно следует добавить вейтер?
         String popupAssigneeXpath = "//div[@class = 'aui-message closeable aui-message-success aui-will-close']";
         driver.findElement(By.xpath(popupAssigneeXpath)).getText();
         Assert.assertEquals("AQA919-5 has been assigned.","AQA919-5 has been assigned.");
