@@ -12,10 +12,9 @@ public class Browserfactory {
     public static WebDriver getDriver(Browser browser) {
         if (driver == null) {
             final OS currentOS = OS.current();
-           // final String binPath = String.format("%s/bin/%s%s", System.getProperty("user.dir"), browser.driverPathInBin, currentOS.driverFileNameEnding);
             switch (browser) {
                 case CHROME:
-                    System.setProperty("webdriver.chrome.driver", "/Users/kateryna.filippova/Documents/chromedriver_mac");
+                    System.setProperty("webdriver.chrome.driver", String.format("%s/bin/%s%s", System.getProperty("user.dir"), browser.driverPathInBin, currentOS.driverFileNameEnding));
                     driver = new ChromeDriver();
                     break;
                 case FIREFOX:
