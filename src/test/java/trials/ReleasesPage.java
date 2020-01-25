@@ -19,6 +19,7 @@ public class ReleasesPage {
             driver.get("https://jira.hillel.it/browse/AQA919-8");
             LoginPage.login(driver);
 
+            // Нравится
             String openPage = Keys.chord(Keys.CONTROL, Keys.RETURN);
             driver.findElement(By.linkText("Releases")).sendKeys(openPage);
 

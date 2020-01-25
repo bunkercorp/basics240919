@@ -1,4 +1,4 @@
-package trials;
+package infra;
 
 public class ConfigManager {
 
