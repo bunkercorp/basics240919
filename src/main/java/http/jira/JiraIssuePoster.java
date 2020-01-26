@@ -127,6 +127,8 @@ public class JiraIssuePoster {
 
     public JiraIssue create() throws IOException {
         JiraIssue result = null;
+        if (summary == null)
+            errors.add("Summary is either not set or only consists of whitespaces. Use summary().");
         if (projectId == -1) errors.add("Project is not set. Use withProject().");
         if (issueType == null) {
             final int[] issueTypeId = {-1};
@@ -189,8 +191,6 @@ public class JiraIssuePoster {
 
             }
         }
-        if (summary == null)
-            errors.add("Summary is either not set or only consists of whitespaces. Use summary().");
         if (errors.size() > 0) {
             throw new IllegalStateException("Cannot create an issue:\n" + String.join("-n", errors));
         }
