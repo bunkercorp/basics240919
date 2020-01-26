@@ -51,7 +51,10 @@ public class JiraIssuePoster {
         } catch (IOException e) {
             onIOError.run();
         }
+    }
 
+    private static boolean assureNonDummy(String candidate) {
+        return candidate != null && !candidate.trim().isEmpty();
     }
 
     public JiraIssuePoster forProject(String projectKey) {
@@ -98,30 +101,34 @@ public class JiraIssuePoster {
     }
 
     public JiraIssuePoster summary(String summary) {
-        if (summary != null && !summary.trim().isEmpty())
+        if (assureNonDummy(summary))
             this.summary = summary;
         return this;
     }
 
     public JiraIssuePoster withDescription(String description) {
-        if (description != null && !description.trim().isEmpty())
+        if (assureNonDummy(description))
             this.description = description;
         return this;
     }
 
     public JiraIssuePoster ofType(String issueTypeFriendly) {
-        if (issueTypeFriendly != null && issueTypeFriendly.trim().length() > 0)
+        if (assureNonDummy(issueTypeFriendly))
             issueType = issueTypeFriendly;
         return this;
     }
 
     public JiraIssuePoster label(String label) {
-        labels.add(label);
+        if (assureNonDummy(label))
+            labels.add(label);
         return this;
     }
 
     public JiraIssuePoster labels(Collection<String> labels) {
-        this.labels.addAll(labels);
+        labels.forEach(label -> {
+            if (assureNonDummy(label))
+                this.labels.add(label);
+        });
         return this;
     }
 
