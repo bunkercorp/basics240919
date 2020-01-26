@@ -35,17 +35,18 @@ public class SomeClass {
         driver.manage().window().maximize();
         LoginPage.login(driver);
         Thread.sleep(1000);
-//        String xpathAssignToMe = "//a[@id='assign-to-me']";
-//        driver.findElement(By.xpath(xpathAssignToMe)).click();
-//        String newName = "//span[@id='issue_summary_assignee_n.n.kopko']";
-//        String xpathName = driver.findElement(By.xpath(newName)).getText().trim();
-//        String xpathName2="Niko";
-//        Assert.assertEquals(xpathName,xpathName2);
-//        Thread.sleep(2000);
-//        String xpathPop = "//div[@class='aui-message closeable aui-message-success aui-will-close']";
-//        String xpathPopup = driver.findElement(By.xpath(xpathPop)).getText().trim();
-//        String xpathPopup2="AQA919-4 has been assigned.";
-//        Assert.assertEquals(xpathPopup,xpathPopup2);
+        String xpathAssignToMe = "//a[@id='assign-to-me']";
+        driver.findElement(By.xpath(xpathAssignToMe)).click();
+        String newName = "//span[@id='issue_summary_assignee_n.n.kopko']";
+// id="issue_summary_assignee_samigullin.nikita"
+        String xpathName = driver.findElement(By.xpath(newName)).getText().trim();
+        String xpathName2="Niko";
+        Assert.assertEquals(xpathName,xpathName2);
+        Thread.sleep(2000);
+        String xpathPop = "//div[@class='aui-message closeable aui-message-success aui-will-close']";
+        String xpathPopup = driver.findElement(By.xpath(xpathPop)).getText().trim();
+        String xpathPopup2="AQA919-4 has been assigned.";
+        Assert.assertEquals(xpathPopup,xpathPopup2);
 
         String xpathPriority = "//span[@id='priority-val']";
         driver.findElement(By.xpath(xpathPriority)).click();
