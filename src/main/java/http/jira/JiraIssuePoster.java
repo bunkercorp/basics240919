@@ -199,7 +199,7 @@ public class JiraIssuePoster {
             }
         }
         if (errors.size() > 0) {
-            throw new IllegalStateException("Cannot create an issue:\n" + String.join("-n", errors));
+            throw new IllegalStateException("Cannot create an issue:\n\t" + String.join("\n\t", errors));
         }
 
         return result;
