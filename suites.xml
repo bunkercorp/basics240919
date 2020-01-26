@@ -1,17 +1,10 @@
 <?xml version = "1.0" encoding = "UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name = "HW1" parallel="methods" >
-    <test name = "hw1">
+<suite name="HW1" >
+       <test name="HW1">
         <classes>
-            <class name = "trials.ClassTask"/>
-           <class name = "trials.ClassTask"/>
-         </classes>
-    </test>
-    <test name = "hw2">
-        <classes>
-            <class name = "trials.ClassTask"/>
-            <class name = "trials.ClassTask"/>
+            <class name="trials.PostJira"/>
         </classes>
     </test>
 </suite>

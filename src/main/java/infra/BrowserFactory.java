@@ -11,17 +11,14 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
-public class Browserfactory {
+public class BrowserFactory {
     private static WebDriver driver = null;
 
     public static WebDriver getDriver(Browser browser) throws MalformedURLException {
         if (driver == null) {
-
-            String flag = System.getProperty("REMOTE_RUN");
-            boolean isRemoteRun =  flag != null && flag.toLowerCase().contentEquals("true");
             final OS currentOS = OS.current();
             final String binPath = String.format("%s/bin/%s%s", System.getProperty("user.dir"), browser.driverPathInBin, currentOS.driverFileNameEnding);
-            if(isRemoteRun){
+            if(ConfigurationManager.getInstance().getConfig("isRemoteRun").asFlag()){
                 Capabilities cap = new DesiredCapabilities();
                 driver =  new RemoteWebDriver(new URL("http://192.168.3.69:4444/wd/hub"), cap);
             }else
