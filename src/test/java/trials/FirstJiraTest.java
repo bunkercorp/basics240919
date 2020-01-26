@@ -19,17 +19,18 @@ public class FirstJiraTest {
     public void FirstTest(){
         final WebDriver driver = Browserfactory.getDriver(Browser.CHROME);
         driver.get("https://jira.hillel.it/browse/AQA919-7");
-        LoginPage.login(driver); //(login with maven only)
+        LoginPage.login(driver); //(login with maven only) // ???
 
         driver.findElement(By.xpath("//*[@id=\"assign-to-me\"]")).click(); //assign to me
         WebDriverWait wait = new WebDriverWait(driver, 20);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("aui-message-success"))).getText();
         Assert.assertEquals("AQA919-7 has been assigned.", "AQA919-7 has been assigned.");
 
+        // id="issue_summary_assignee_samigullin.nikita"
         String assignee = driver.findElement(By.xpath("//*[@id=\"issue_summary_assignee_ekaterinaF\"]")).getText();//get text
         Assert.assertEquals(assignee, "Ekaterina Filippova"); //сравнить значения
 
-        driver.close();
+   //     driver.close();
 
 
 
