@@ -24,6 +24,7 @@ public class FirstJiraTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='aui-flag-container']/div/div"))).getText();
         Assert.assertEquals("AQA919-2 has been assigned.", "AQA919-2 has been assigned.");
 
+// id="issue_summary_assignee_samigullin.nikita" ;)
         String assignee = driver.findElement(By.xpath("//*[@id=\"issue_summary_assignee_kshedris\"]")).getText();
         Assert.assertEquals( assignee ,"Konstantin Shedris" );
 

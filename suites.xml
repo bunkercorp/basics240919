@@ -4,7 +4,7 @@
 <suite name = "HW1">
     <test name = "hw1">
         <classes>
-            <class name = "trials.ClassTask"/>
+            <class name = "trials.FirstJiraTest"/>
         </classes>
     </test>
 </suite>
