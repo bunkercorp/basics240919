@@ -72,11 +72,6 @@ public final class HttpRequestComposer {
     private HTTPMethod method = HTTPMethod.GET;
     private String payload = null;
 
-    public HttpRequestComposer withContentType(ContentType ct) {
-        headers.put("Content-Type", ct.headerContent);
-        return this;
-    }
-
     public HttpRequestComposer auth(AuthType at, String token) {
         headers.put("Authorization", String.format("%s %s", at.headerContent, token));
         return this;
@@ -87,8 +82,9 @@ public final class HttpRequestComposer {
         return this;
     }
 
-    public HttpRequestComposer payload(String p) {
+    public HttpRequestComposer payload(String p, ContentType ct) {
         payload = p;
+        headers.put("Content-Type", ct.headerContent);
         return this;
     }
 

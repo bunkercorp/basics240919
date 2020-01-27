@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 public class JiraIssuePoster {
@@ -34,12 +33,10 @@ public class JiraIssuePoster {
 
     static {
         try {
-            HttpRequestComposer.HttpResponse response = new HttpRequestComposer()
+            new HttpRequestComposer()
                     .auth(HttpRequestComposer.AuthType.BASIC, new Base64().encodeToString(creds.getBytes()))
                     .via(HttpRequestComposer.HTTPMethod.HEAD)
-                    .fire("https://jira.hillel.it/");
-
-            response.getResponseHeaders()
+                    .fire("https://jira.hillel.it/").getResponseHeaders()
                     .get("Set-Cookie")
                     .stream()
                     .filter(cookieToSet -> cookieToSet.startsWith("JSESSIONID="))
@@ -204,8 +201,7 @@ public class JiraIssuePoster {
                 final HttpRequestComposer.HttpResponse response = new HttpRequestComposer()
                         .auth(HttpRequestComposer.AuthType.BASIC, new Base64().encodeToString(creds.getBytes()))
                         .via(HttpRequestComposer.HTTPMethod.POST)
-                        .withContentType(HttpRequestComposer.ContentType.JSON)
-                        .payload(payload.toString())
+                        .payload(payload.toString(), HttpRequestComposer.ContentType.JSON)
                         .setHeader("Cookie", String.format("JSESSIONID=%s", jSessionId))
                         .fire("https://jira.hillel.it/rest/api/2/issue");
 
