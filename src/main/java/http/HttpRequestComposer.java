@@ -106,7 +106,7 @@ public final class HttpRequestComposer {
         httpCon.setRequestMethod(method.name());
         headers.forEach(httpCon::setRequestProperty);
         if (method.acceptsPayload) {
-            httpCon.setRequestProperty("Content-Length", "" + payload.length());
+            httpCon.setRequestProperty("Content-Length", "" + (payload == null ? 0 : payload.length()));
             final OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream());
             out.write(payload == null ? "" : payload);
             out.close();
