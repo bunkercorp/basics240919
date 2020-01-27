@@ -21,16 +21,16 @@ public final class IssuePage extends AbstractPage {
 
     private static IssuePage instance = new IssuePage();
 
-//    public static IssuePage instance() {
-//        if (instance == null)
-//            instance = new IssuePage();
-//        return instance;
-//    }
-//
-//    public static IssuePage instance(WebDriver driver) {
-//        instance = (IssuePage) instance().with(driver);
-//        return instance;
-//    }
+    public static IssuePage instance() {
+        if (instance == null)
+            instance = new IssuePage();
+        return instance;
+    }
+
+    public static IssuePage instance(WebDriver driver) {
+        instance = (IssuePage) instance().with(driver);
+        return instance;
+    }
 
     @Override
     public ReturnResult visit(Object... pageSpecificArguments) {
@@ -38,7 +38,6 @@ public final class IssuePage extends AbstractPage {
         if (pageSpecificArguments.length != 1 || !pageSpecificArguments[0].getClass().equals(String.class))
             throw new IllegalArgumentException("IssuePage::visit expects exactly one argument of type String");
         else {
-            System.out.println("in cand");
             String candidate = (String) pageSpecificArguments[0];
             if (!jiraIssuePattern.matcher(candidate).matches()) {
                 throw new IllegalArgumentException(String.format("IssuePage::visit received \"%s\" which does not seem as a valid jira key", candidate));

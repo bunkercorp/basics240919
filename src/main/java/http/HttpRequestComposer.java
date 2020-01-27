@@ -16,13 +16,20 @@ import java.util.Map;
 
 public final class HttpRequestComposer {
     public static final class HttpResponse {
-        public final int rescode;
+        public final int resCode;
         public final String resBody;
+        private final Map<String, List<String>> resHeaders;
 
-        public HttpResponse(int rc, String rb) {
+        public HttpResponse(int rc, String rb, Map<String, List<String>> rh) {
             resBody = rb;
-            rescode = rc;
+            resCode = rc;
+            resHeaders = rh;
         }
+
+        public Map<String, List<String>> getResponseHeaders() {
+            return new HashMap<>(resHeaders);
+        }
+
     }
 
     public enum ContentType {
@@ -46,7 +53,10 @@ public final class HttpRequestComposer {
     }
 
     public enum HTTPMethod {
-        GET(false), POST(true), PUT(true);
+        HEAD(false),
+        GET(false),
+        POST(true),
+        PUT(true);
         public final boolean acceptsPayload;
 
         private HTTPMethod(boolean ap) {
@@ -117,7 +127,9 @@ public final class HttpRequestComposer {
         while (null != (line = rd.readLine())) {
             result.add(line);
         }
-        return new HttpResponse(httpCon.getResponseCode(), String.join("", result));
+
+
+        return new HttpResponse(httpCon.getResponseCode(), String.join("", result), httpCon.getHeaderFields());
     }
 
 }

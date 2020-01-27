@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class JiraIssuePoster {
@@ -29,6 +30,27 @@ public class JiraIssuePoster {
             ConfigurationManager.getInstance().getConfig("jiraPwd").asString()
     );
 
+    private static String jSessionId = null;
+
+    static {
+        try {
+            HttpRequestComposer.HttpResponse response = new HttpRequestComposer()
+                    .auth(HttpRequestComposer.AuthType.BASIC, new Base64().encodeToString(creds.getBytes()))
+                    .via(HttpRequestComposer.HTTPMethod.HEAD)
+                    .fire("https://jira.hillel.it/");
+
+            Optional<String> jSessionIdCandidate = response.getResponseHeaders().get("Set-Cookie")
+                    .stream()
+                    .filter(cookieToSet -> cookieToSet.startsWith("JSESSIONID="))
+                    .findFirst();
+
+            jSessionIdCandidate.ifPresent(s -> jSessionId = s
+                    .split(";")[0]
+                    .replace("JSESSIONID=", "")
+                    .trim());
+        } catch (IOException ignored) {
+        }
+    }
 
     private String description = null;
     private String projectKey = null;
@@ -43,11 +65,10 @@ public class JiraIssuePoster {
         try {
             HttpRequestComposer.HttpResponse response = new HttpRequestComposer()
                     .auth(HttpRequestComposer.AuthType.BASIC, new Base64().encodeToString(creds.getBytes()))
-                    // надо бы наловчиться получать это куки прямо как взаправду.... но мне лень =)
-                    .setHeader("Cookie", "JSESSIONID=8FCCF738DF94666423D6FC3AD3DB6C4A")
+                    .setHeader("Cookie", String.format("JSESSIONID=%s", jSessionId))
                     .fire(String.format("https://jira.hillel.it/rest/api/2/%s", apiEndpoint));
-            if (response.rescode == 200) onOk.accept(response.resBody);
-            else onNonOk.accept(response.rescode);
+            if (response.resCode == 200) onOk.accept(response.resBody);
+            else onNonOk.accept(response.resCode);
         } catch (IOException e) {
             onIOError.run();
         }
@@ -137,14 +158,14 @@ public class JiraIssuePoster {
         if (summary == null)
             errors.add("Summary is either not set or only consists of whitespaces. Use summary().");
         if (projectId == -1) errors.add("Project is not set. Use withProject().");
-        if (issueType != null) {
+        if (issueType == null)
+            errors.add("Issue type is not set. Use ofType().");
+        else if (projectId > 0) {
             final int[] issueTypeId = {-1};
-            fireGet(String.format("issue/createMeta?projectKeys=%s&expand=projects.issuetypes.fields", projectKey),
+            fireGet(String.format("project/%d", projectId),
                     (responseRaw) -> {
                         JSONArray issueTypesParsed = new JSONObject(responseRaw)
-                                .getJSONArray("projects")
-                                .getJSONObject(0)
-                                .getJSONArray("issuetypes");
+                                .getJSONArray("issueTypes");
                         for (int i = 0; i < issueTypesParsed.length(); i += 1) {
                             if (issueTypesParsed.getJSONObject(i).getString("name").contentEquals(issueType)) {
                                 issueTypeId[0] = issueTypesParsed.getJSONObject(i).getInt("id");
@@ -176,7 +197,7 @@ public class JiraIssuePoster {
                 fields.put("description", description);
                 fields.put("reporter", new JSONObject().put("name", ConfigurationManager.getInstance().getConfig("jiraUser").asString()));
                 fields.put("issuetype", new JSONObject().put("id", issueTypeId[0]));
-                fields.put("priority", new JSONObject().put("id", priorityId));
+                fields.put("priority", new JSONObject().put("id", "" + priorityId));
                 fields.put("labels", labels);
                 payload.put("fields", fields);
 
@@ -185,17 +206,15 @@ public class JiraIssuePoster {
                         .via(HttpRequestComposer.HTTPMethod.POST)
                         .withContentType(HttpRequestComposer.ContentType.JSON)
                         .payload(payload.toString())
-                        // надо бы наловчиться получать это куки прямо как взаправду.... но мне лень =)
-                        .setHeader("Cookie", "JSESSIONID=8FCCF738DF94666423D6FC3AD3DB6C4A")
+                        .setHeader("Cookie", String.format("JSESSIONID=%s", jSessionId))
                         .fire("https://jira.hillel.it/rest/api/2/issue");
 
-                if (response.rescode == 201) {
+                if (response.resCode == 201) {
                     JSONObject responseParsed = new JSONObject(response.resBody);
                     result = new JiraIssue(responseParsed.getString("key"), responseParsed.getInt("id"));
-                }
+                } else errors.add(String.format("Cannot create an issue: HTTP response code %d", response.resCode));
             }
-        } else
-            errors.add("Issue type is not set. Use ofType().");
+        }
         if (errors.size() > 0) {
             throw new IllegalStateException("Cannot create an issue:\n\t" + String.join("\n\t", errors));
         }
