@@ -137,7 +137,7 @@ public class JiraIssuePoster {
         if (summary == null)
             errors.add("Summary is either not set or only consists of whitespaces. Use summary().");
         if (projectId == -1) errors.add("Project is not set. Use withProject().");
-        if (issueType == null) {
+        if (issueType != null) {
             final int[] issueTypeId = {-1};
             fireGet(String.format("issue/createMeta?projectKeys=%s&expand=projects.issuetypes.fields", projectKey),
                     (responseRaw) -> {
@@ -165,9 +165,7 @@ public class JiraIssuePoster {
                         issueTypeId[0] = 0;
                     }
             );
-            if (issueTypeId[0] == -1)
-                errors.add("Issue type is not set. Use ofType().");
-            else { // as issue type is ultimate dependency, firing a new issue request only if everything OK with issue type
+            if (issueTypeId[0] > 0) { // as issue type is ultimate dependency, firing a new issue request only if everything OK with issue type
                 JSONArray labels = new JSONArray();
                 this.labels.stream().distinct().forEach(labels::put);
 
@@ -195,9 +193,9 @@ public class JiraIssuePoster {
                     JSONObject responseParsed = new JSONObject(response.resBody);
                     result = new JiraIssue(responseParsed.getString("key"), responseParsed.getInt("id"));
                 }
-
             }
-        }
+        } else
+            errors.add("Issue type is not set. Use ofType().");
         if (errors.size() > 0) {
             throw new IllegalStateException("Cannot create an issue:\n\t" + String.join("\n\t", errors));
         }
