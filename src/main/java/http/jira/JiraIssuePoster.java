@@ -39,15 +39,15 @@ public class JiraIssuePoster {
                     .via(HttpRequestComposer.HTTPMethod.HEAD)
                     .fire("https://jira.hillel.it/");
 
-            Optional<String> jSessionIdCandidate = response.getResponseHeaders().get("Set-Cookie")
+            response.getResponseHeaders()
+                    .get("Set-Cookie")
                     .stream()
                     .filter(cookieToSet -> cookieToSet.startsWith("JSESSIONID="))
-                    .findFirst();
-
-            jSessionIdCandidate.ifPresent(s -> jSessionId = s
-                    .split(";")[0]
-                    .replace("JSESSIONID=", "")
-                    .trim());
+                    .findFirst()
+                    .ifPresent(s -> jSessionId = s
+                            .split(";")[0]
+                            .replace("JSESSIONID=", "")
+                            .trim());
         } catch (IOException ignored) {
         }
     }
