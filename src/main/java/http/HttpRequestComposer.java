@@ -35,7 +35,7 @@ public final class HttpRequestComposer {
     public enum ContentType {
         PLAIN_TEXT("text/plain"),
         JSON("application/json");
-        public final String headerContent;
+        protected final String headerContent;
 
         private ContentType(String s) {
             headerContent = s;
@@ -44,7 +44,7 @@ public final class HttpRequestComposer {
 
     public enum AuthType {
         BASIC("Basic");
-        public final String headerContent;
+        protected final String headerContent;
 
         private AuthType(String s) {
             headerContent = s;
@@ -57,7 +57,7 @@ public final class HttpRequestComposer {
         GET(false),
         POST(true),
         PUT(true);
-        public final boolean acceptsPayload;
+        protected final boolean acceptsPayload;
 
         private HTTPMethod(boolean ap) {
             acceptsPayload = ap;
