@@ -97,22 +97,19 @@ public class Exam_Kostya {
 
 
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='app-rz-common']//button[2]"))).click();
-            Thread.sleep(1500);
             //step 15; verify sum of 2 elements
-            float expectedPrice2 = 1998;
-            String StrActualSum2 = driver.findElement(By.cssSelector("body > app-root > div > div:nth-child(2) > div.app-rz-common > cart-modal > modal-window > div > div > div > cart-content > div:nth-child(1) > ul > li > div > div > div.cart-modal__item-flex > div.cart-modal__sum > div > span.cart-modal__coast-digits")).getText();
-            System.out.println(StrActualSum2);
-            float actualSum2 = Float.parseFloat(StrActualSum2);
-            Assert.assertEquals(expectedPrice2,actualSum2);
 
-            Thread.sleep(1000);
-            //   [cart sum*2]
-            String StrActualCheckoutSum2 = driver.findElement(By.cssSelector("body > app-root > div > div:nth-child(2) > div.app-rz-common > cart-modal > modal-window > div > div > div > cart-content > div:nth-child(1) > div > div > div > span:nth-child(2) > span.cart-modal__check-digits")).getText();
-            float actualCheckoutSum2 = Float.parseFloat(StrActualCheckoutSum2);
-            float expectedCheckoutSum2 = 999*2;
-            Assert.assertEquals(actualCheckoutSum2,expectedCheckoutSum2);
+           Assert.assertEquals(actualCheckoutSum * 2,expectedCheckoutSum *2);
 
-         //   driver.quit();
+            //click on buy
+            Thread.sleep(2000);
+            driver.findElement(By.xpath("/html/body/app-root/div/div[1]/div[2]/cart-modal/modal-window/div/div/div/cart-content/div[1]/div/div/a")).click();
+
+            //check point17
+            String result2 = driver.findElement(By.xpath("/html/body/div[2]/div/div/section/h2")).getText();
+            Assert.assertEquals(result2, "Оформление заказа");
+
+            driver.quit();
         }
 
 
