@@ -26,7 +26,7 @@ public class Buy_product {
 
         Thread.sleep(300);
         //купить продукт на странице продукта
-        driver.findElement(By.xpath("//*[@id=\"price_container\"]//button[@class='btn-link-i']")).click();
+        driver.findElement(By.xpath("//*[@id='price_container']//button[@class='btn-link-i']")).click();
         Thread.sleep(3000);
 
         driver.switchTo().activeElement();
