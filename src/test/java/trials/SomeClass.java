@@ -24,6 +24,7 @@ import java.util.List;
 import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 public class SomeClass {
+     String targetProduct = "Блендер Hilton SMS 8143";
     @Test
     public void firstTest() throws InterruptedException {
         final WebDriver driver = Browserfactory.getDriver(Browser.CHROME);
@@ -38,7 +39,7 @@ public class SomeClass {
         WebDriverWait wait = new WebDriverWait(driver, 10);
         WebElement searchField = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='search-form__input-wrapper']/input")));
 
-        String targetProduct = "Блендер Hilton SMS 8143";
+
 
         searchField.sendKeys(targetProduct);
         driver.findElement(By.xpath("//button[@class='button button_color_green button_size_medium search-form__submit']")).click();
