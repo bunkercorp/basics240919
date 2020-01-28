@@ -23,8 +23,6 @@ public class ConfigurationManager {
                 } else
                     throw new IllegalArgumentException(String.format("browser property is set to %s which is not a known browser", browserProperty));
             } else throw new IllegalArgumentException("browser property is not set.");
-
-
         });
         put("jiraUser", () -> System.getProperty("jiraUser"));
         put("jiraPwd", () -> System.getProperty("jiraPwd"));
