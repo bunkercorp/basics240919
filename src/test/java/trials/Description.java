@@ -9,17 +9,17 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class Description {
     public void addDescription(WebDriver driver, String description) throws InterruptedException {
         String currentWindowHandle = driver.getWindowHandle();
+        WebDriverWait wait = new WebDriverWait(driver,10);
+
         WebElement formWrapper = driver.findElement(By.id("description-val"));
         formWrapper.click();
-//        Thread.sleep(300);
-        driver.switchTo().frame(new WebDriverWait(driver,5)
-            .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id='description-wiki-edit']//iframe"))));
-        Thread.sleep(300);
-        driver.findElement(By.xpath("/html/body/p")).sendKeys(description);
-        Thread.sleep(500);
+        driver.switchTo().frame(wait
+            .until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='wiki-edit-content']//iframe"))));
 
-        driver.switchTo().window(currentWindowHandle);
+        driver.findElement(By.xpath("/html/body")).sendKeys(description);
 
+//        driver.switchTo().window(currentWindowHandle);
+        driver.switchTo().parentFrame();
         formWrapper.findElement(By.xpath("//button[@type='submit' and @class='aui-button aui-button-primary submit']"))
                 .click();
 

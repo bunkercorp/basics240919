@@ -3,6 +3,7 @@ package infra;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 
 import java.util.concurrent.TimeUnit;
 
@@ -20,6 +21,8 @@ public class Browserfactory {
                     break;
                 case FIREFOX:
                     //FIXME
+                    System.setProperty("webdriver.gecko.driver", binPath);
+                    driver = new FirefoxDriver();
                     break;
             }
 
