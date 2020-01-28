@@ -35,7 +35,8 @@ public class JiraNewIssue {
         httpCon.setRequestProperty("Content-Type", "application/json");
         httpCon.setRequestProperty("User-Agent", "Aqa study");
         httpCon.setRequestProperty("Content-Length", "" + payload.length());
-        httpCon.setRequestProperty("Cookie", "JSESSIONID=8B2B3A0BF2D7BBC91259E9A25C7A2C0E");
+        httpCon.setRequestProperty("Cookie", "JSESSIONID=B66B503CAAC8AF422596D3486627D21C");
+        //old cookie= 8B2B3A0BF2D7BBC91259E9A25C7A2C0E
 
         if (verb == Verb.POST){
             final OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream());
@@ -71,7 +72,7 @@ public class JiraNewIssue {
         JSONObject fields = new JSONObject();
         fields.put("project", new JSONObject().put("id", "12120"));
         fields.put("summary", "Lorem ipsum elit");
-        fields.put("description", "Lorem ipsum elit description");
+        fields.put("description", "test api description");
         fields.put("reporter", new JSONObject().put("name", System.getProperty("jirauser")));
         fields.put("issuetype", new JSONObject().put("id", "10107"));
         fields.put("priority", new JSONObject().put("id", "5"));
