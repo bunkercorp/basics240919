@@ -2,7 +2,7 @@ package infra;
 
 public enum Browser {
     CHROME("chromedrivers/chromedriver"),
-    FIREFOX("marionettedrivers/marionettedriver");
+    FIREFOX("geckodriver/geckodriver");
 
     public final String driverPathInBin;
 

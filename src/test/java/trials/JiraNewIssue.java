@@ -55,7 +55,7 @@ public class JiraNewIssue {
             result.add(line);
         }
         System.out.println(httpCon.getResponseCode());
-      JSONObject response = new JSONObject(String.join("", result));
+        JSONObject response = new JSONObject(String.join("", result));
 
         System.out.println(response.toString(5));
     }
