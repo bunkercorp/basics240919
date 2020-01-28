@@ -10,6 +10,8 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.interactions.InputSource;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -18,6 +20,8 @@ import org.testng.annotations.Test;
 import java.sql.Driver;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.openqa.selenium.support.ui.ExpectedConditions.*;
 
 public class SomeClass {
     @Test
@@ -28,9 +32,44 @@ public class SomeClass {
 
         //login
         driver.manage().window().maximize();
-        driver.get("https://jira.hillel.it/browse/AQA919-5");
-        LoginPage.login(driver);
-        Thread.sleep(300);
+        driver.get("https://rozetka.com.ua/");
+        Thread.sleep(2000);
+
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        WebElement searchField = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='search-form__input-wrapper']/input")));
+
+        String targetProduct = "Блендер Hilton SMS 8143";
+
+        searchField.sendKeys(targetProduct);
+        driver.findElement(By.xpath("//button[@class='button button_color_green button_size_medium search-form__submit']")).click();
+
+        //check search position is first
+
+
+
+        Thread.sleep(3000);
+
+
+
+//
+//        WebElement pencil = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[contains(@class, 'labels-wrap')]//span[contains(@class, 'aui-iconfont-edit')]")));
+//        pencil.click();
+
+
+//
+//        String searchFormSelector = "//div[@class='search-form__input-wrapper']";
+//        WebElement searchForm = driver.findElement(By.xpath(searchFormSelector));
+//        searchForm.sendKeys("Блендер Hilton SMS 8143");
+
+
+
+
+
+
+
+
+
+
 
         //assign ticket to current user
 //        String assignXpath = "//a[@id='assign-to-me']";
