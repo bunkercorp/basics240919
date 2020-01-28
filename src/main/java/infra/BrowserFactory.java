@@ -2,6 +2,7 @@ package infra;
 
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -23,7 +24,10 @@ public class BrowserFactory {
                     browser.driverPathInBin,
                     currentOS.driverFileNameEnding);
             if (ConfigurationManager.getInstance().getConfig("isRemoteRun", Boolean.class)) {
-                Capabilities cap = new DesiredCapabilities();
+                DesiredCapabilities capabilities = new DesiredCapabilities();
+              //  capabilities.setPlatform(Platform.VISTA);
+                capabilities.setBrowserName(browser.name().toLowerCase());
+            //    capabilities.setVersion("43");
                 URL url = null;
                 try {
                     url = new URL("http://192.168.3.69:4444/wd/hub");
@@ -31,7 +35,7 @@ public class BrowserFactory {
                     System.out.println("In BrowserFactory::getDriver");
                     ignored.printStackTrace();
                 }
-                driver = new RemoteWebDriver(url, cap);
+                driver = new RemoteWebDriver(url, capabilities);
             } else
                 switch (browser) {
                     case CHROME:
