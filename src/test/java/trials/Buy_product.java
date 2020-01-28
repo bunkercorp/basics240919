@@ -66,15 +66,20 @@ public class Buy_product {
 
 
         //Убедиться, что индикатор корзины показывает нужное количество продуктов
-//        WebDriverWait Count = new WebDriverWait(driver, 20);
-//        String hubCount = Count.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id=\"cart_block79442\"]/a/span[2]"))).getText();
-//        Assert.assertEquals(productCount, hubCount );
+        String hubCount = driver.findElement(By.xpath("//*[@id=\"cart_popup_header\"]/div[2]//span[2]")).getText();
+        Assert.assertEquals(productCount, hubCount );
 
         //Нажать на корзину
-        Thread.sleep(1000);
-        driver.findElement(By.xpath("//div[@id=\"cart_block30132\"]/a")).click();
-        driver.switchTo().activeElement();
 
+        driver.findElement(By.xpath("//*[@id=\"cart_popup_header\"]/div[2]")).click();
+        Thread.sleep(3000);
+
+
+        //нажать на плюс
+        WebElement plusButton = driver.findElement(By.xpath("//*[@id=\"cart-popup\"]//img[@class=\"cart-amount-plus-icon sprite\"]"));
+        plusButton.click();
+
+        Thread.sleep(3000);
 
 
 
