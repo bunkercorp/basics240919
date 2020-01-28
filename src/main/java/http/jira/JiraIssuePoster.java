@@ -14,6 +14,12 @@ import java.util.function.Consumer;
 
 public class JiraIssuePoster {
 
+    public final static class CannotCreateJiraIssueError extends Error {
+        public CannotCreateJiraIssueError(String msg) {
+            super(msg);
+        }
+    }
+
     public final static class JiraIssue {
         public final String key;
         public final int apiId;
@@ -25,28 +31,25 @@ public class JiraIssuePoster {
     }
 
     private final static String creds = String.format("%s:%s",
-            ConfigurationManager.getInstance().getConfig("jiraUser").asString(),
-            ConfigurationManager.getInstance().getConfig("jiraPwd").asString()
+            ConfigurationManager.getInstance().getConfig("jiraUser", String.class),
+            ConfigurationManager.getInstance().getConfig("jiraPwd", String.class)
     );
 
     private static String jSessionId = null;
 
     static {
-        try {
-            new HttpRequestComposer()
-                    .auth(HttpRequestComposer.AuthType.BASIC, new Base64().encodeToString(creds.getBytes()))
-                    .via(HttpRequestComposer.HTTPMethod.HEAD)
-                    .fire("https://jira.hillel.it/").getResponseHeaders()
-                    .get("Set-Cookie")
-                    .stream()
-                    .filter(cookieToSet -> cookieToSet.startsWith("JSESSIONID="))
-                    .findFirst()
-                    .ifPresent(s -> jSessionId = s
-                            .split(";")[0]
-                            .replace("JSESSIONID=", "")
-                            .trim());
-        } catch (IOException ignored) {
-        }
+        new HttpRequestComposer()
+                .auth(HttpRequestComposer.AuthType.BASIC, new Base64().encodeToString(creds.getBytes()))
+                .via(HttpRequestComposer.HTTPMethod.HEAD)
+                .fire("https://jira.hillel.it/").getResponseHeaders()
+                .get("Set-Cookie")
+                .stream()
+                .filter(cookieToSet -> cookieToSet.startsWith("JSESSIONID="))
+                .findFirst()
+                .ifPresent(s -> jSessionId = s
+                        .split(";")[0]
+                        .replace("JSESSIONID=", "")
+                        .trim());
     }
 
     private String description = null;
@@ -58,17 +61,14 @@ public class JiraIssuePoster {
     private List<String> labels = new ArrayList<>();
     private List<String> errors = new ArrayList<>();
 
-    private static void fireGet(String apiEndpoint, Consumer<String> onOk, Consumer<Integer> onNonOk, Runnable onIOError) {
-        try {
-            HttpRequestComposer.HttpResponse response = new HttpRequestComposer()
-                    .auth(HttpRequestComposer.AuthType.BASIC, new Base64().encodeToString(creds.getBytes()))
-                    .setHeader("Cookie", String.format("JSESSIONID=%s", jSessionId))
-                    .fire(String.format("https://jira.hillel.it/rest/api/2/%s", apiEndpoint));
-            if (response.resCode == 200) onOk.accept(response.resBody);
-            else onNonOk.accept(response.resCode);
-        } catch (IOException e) {
-            onIOError.run();
-        }
+    private static void fireGet(String apiEndpoint, Consumer<String> onOk, Consumer<Integer> onNonOk) {
+        HttpRequestComposer.HttpResponse response = new HttpRequestComposer()
+                .auth(HttpRequestComposer.AuthType.BASIC, new Base64().encodeToString(creds.getBytes()))
+                .setHeader("Cookie", String.format("JSESSIONID=%s", jSessionId))
+                .fire(String.format("https://jira.hillel.it/rest/api/2/%s", apiEndpoint));
+        if (response.resCode == 200) onOk.accept(response.resBody);
+        else onNonOk.accept(response.resCode);
+
     }
 
     private static boolean assureNonDummy(String candidate) {
@@ -94,10 +94,6 @@ public class JiraIssuePoster {
                 (rescode) -> {
                     errors.add(String.format("Cannot determine project id for %s due to HTTP related problems: res code %d", projectKey, rescode));
                     projectId = 0;
-                },
-                () -> {
-                    errors.add(String.format("Cannot determine project id for %s due to IO error", projectKey));
-                    projectId = 0;
                 });
         return this;
     }
@@ -113,8 +109,7 @@ public class JiraIssuePoster {
                         }
                     }
                 },
-                (rescode) -> {/* ignoring non-200 res codes as we still have default value for priority*/ },
-                () -> {/* ignoring io errors as we still have default value for priority*/ });
+                (rescode) -> {/* ignoring non-200 res codes as we still have default value for priority*/ });
         return this;
     }
 
@@ -150,7 +145,7 @@ public class JiraIssuePoster {
         return this;
     }
 
-    public JiraIssue create() throws IOException {
+    public JiraIssue create() {
         JiraIssue result = null;
         if (summary == null)
             errors.add("Summary is either not set or only consists of whitespaces. Use summary().");
@@ -177,12 +172,7 @@ public class JiraIssuePoster {
                     (rescode) -> {
                         errors.add(String.format("Cannot get issue types for project %s: HTTP res code %d", projectKey, rescode));
                         issueTypeId[0] = 0;
-                    },
-                    () -> {
-                        errors.add(String.format("Cannot get issue types for project %s due to IO errors", projectKey));
-                        issueTypeId[0] = 0;
-                    }
-            );
+                    });
             if (issueTypeId[0] > 0) { // as issue type is ultimate dependency, firing a new issue request only if everything OK with issue type
                 JSONArray labels = new JSONArray();
                 this.labels.stream().distinct().forEach(labels::put);
@@ -192,7 +182,7 @@ public class JiraIssuePoster {
                 fields.put("project", new JSONObject().put("id", projectId));
                 fields.put("summary", summary);
                 fields.put("description", description);
-                fields.put("reporter", new JSONObject().put("name", ConfigurationManager.getInstance().getConfig("jiraUser").asString()));
+                fields.put("reporter", new JSONObject().put("name", ConfigurationManager.getInstance().getConfig("jiraUser", String.class)));
                 fields.put("issuetype", new JSONObject().put("id", issueTypeId[0]));
                 fields.put("priority", new JSONObject().put("id", "" + priorityId));
                 fields.put("labels", labels);
@@ -212,7 +202,7 @@ public class JiraIssuePoster {
             }
         }
         if (errors.size() > 0) {
-            throw new IllegalStateException("Cannot create an issue:\n\t" + String.join("\n\t", errors));
+            throw new CannotCreateJiraIssueError("Cannot create an issue:\n\t" + String.join("\n\t", errors));
         }
 
         return result;

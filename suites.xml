@@ -4,7 +4,7 @@
 <suite name="HW1" >
        <test name="HW1">
         <classes>
-            <class name="trials.PostJira"/>
+            <class name="trials.ExamChallenge"/>
         </classes>
     </test>
 </suite>

@@ -9,12 +9,17 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public final class HttpRequestComposer {
+
+    public final static class CannotComposeHttpRequestError extends Error {
+        public CannotComposeHttpRequestError(String msg) {
+            super(msg);
+        }
+    }
+
     public static final class HttpResponse {
         public final int resCode;
         public final String resBody;
@@ -100,32 +105,36 @@ public final class HttpRequestComposer {
         return this;
     }
 
-    public HttpResponse fire(String url) throws IOException {
-        final HttpsURLConnection httpCon = (HttpsURLConnection) new URL(url).openConnection();
-        httpCon.setDoOutput(true);
-        httpCon.setRequestMethod(method.name());
-        headers.forEach(httpCon::setRequestProperty);
-        if (method.acceptsPayload) {
-            httpCon.setRequestProperty("Content-Length", "" + (payload == null ? 0 : payload.length()));
-            final OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream());
-            out.write(payload == null ? "" : payload);
-            out.close();
-        }
-
-        ArrayList<String> result = new ArrayList<String>();
-        BufferedReader rd;
+    public HttpResponse fire(String url) {
         try {
-            rd = new BufferedReader(new InputStreamReader(httpCon.getInputStream()));
-        } catch (Exception e) {
-            rd = new BufferedReader(new InputStreamReader(httpCon.getErrorStream()));
-        }
-        String line;
-        while (null != (line = rd.readLine())) {
-            result.add(line);
+            final HttpsURLConnection httpCon = (HttpsURLConnection) new URL(url).openConnection();
+            httpCon.setDoOutput(true);
+            httpCon.setRequestMethod(method.name());
+            headers.forEach(httpCon::setRequestProperty);
+            if (method.acceptsPayload) {
+                httpCon.setRequestProperty("Content-Length", "" + (payload == null ? 0 : payload.length()));
+                final OutputStreamWriter out = new OutputStreamWriter(httpCon.getOutputStream());
+                out.write(payload == null ? "" : payload);
+                out.close();
+            }
+
+            ArrayList<String> result = new ArrayList<String>();
+            BufferedReader rd;
+            try {
+                rd = new BufferedReader(new InputStreamReader(httpCon.getInputStream()));
+            } catch (Exception e) {
+                rd = new BufferedReader(new InputStreamReader(httpCon.getErrorStream()));
+            }
+            String line;
+            while (null != (line = rd.readLine())) {
+                result.add(line);
+            }
+            return new HttpResponse(httpCon.getResponseCode(), String.join("", result), httpCon.getHeaderFields());
+        } catch (Throwable t) {
+            throw new CannotComposeHttpRequestError(Arrays.stream(t.getStackTrace()).map(StackTraceElement::toString).collect(Collectors.joining("\n")));
+
         }
 
-
-        return new HttpResponse(httpCon.getResponseCode(), String.join("", result), httpCon.getHeaderFields());
     }
 
 }

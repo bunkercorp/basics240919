@@ -42,7 +42,7 @@ public final class IssuePage extends AbstractPage {
             if (!jiraIssuePattern.matcher(candidate).matches()) {
                 throw new IllegalArgumentException(String.format("IssuePage::visit received \"%s\" which does not seem as a valid jira key", candidate));
             } else {
-                String fullUrl = String.format("%s/browse/%s", ConfigurationManager.getInstance().getConfig("projectBaseUrl").asString(), candidate);
+                String fullUrl = String.format("%s/browse/%s", ConfigurationManager.getInstance().getConfig("projectBaseUrl", String.class), candidate);
                 storedDriver.get(fullUrl);
                 result = isOnScreen();
             }

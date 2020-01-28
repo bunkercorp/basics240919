@@ -2,35 +2,30 @@ package infra;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class ConfigurationManager {
-    public static final class ConfigItem {
-        private final Object item;
-
-        protected ConfigItem(Object o) {
-            item = o;
-        }
-
-        public Integer asInt() {
-            return (Integer) item;
-        }
-
-        public String asString() {
-            return (String) item;
-        }
-
-        public Boolean asFlag() {
-            return (Boolean) item;
-        }
-
-    }
-
     private static ConfigurationManager instance;
 
-    private final HashMap<String, ConfigItem> configurationItems = new HashMap<>();
+    private final HashMap<String, Object> configurationItems = new HashMap<>();
 
     private static final HashMap<String, Supplier<Object>> parsingRules = new HashMap<String, Supplier<Object>>() {{
+        put("browser", () -> {
+            final String browserProperty = System.getProperty("browser");
+            if (browserProperty != null) {
+                final Optional<Browser> browserCandidate = Arrays.stream(Browser.values())
+                        .filter(browser -> browserProperty.toUpperCase().contentEquals(browser.name()))
+                        .findFirst();
+
+                if (browserCandidate.isPresent()) {
+                    return browserCandidate.get();
+                } else
+                    throw new IllegalArgumentException(String.format("browser property is set to %s which is not a known browser", browserProperty));
+            } else throw new IllegalArgumentException("browser property is not set.");
+
+
+        });
         put("jiraUser", () -> System.getProperty("jiraUser"));
         put("jiraPwd", () -> System.getProperty("jiraPwd"));
         put("projectBaseUrl", () -> "https://jira.hillel.it");
@@ -48,8 +43,9 @@ public class ConfigurationManager {
             StringBuilder errorSB = new StringBuilder();
             parsingRules.forEach((configItemName, configItemSupplier) -> {
                 try {
-                    instance.configurationItems.put(configItemName, new ConfigItem(configItemSupplier.get()));
+                    instance.configurationItems.put(configItemName, configItemSupplier.get());
                 } catch (Throwable t) {
+                    t.printStackTrace();
                     t.getStackTrace();
                     errorSB.append(String.format("\t\"%s\"", configItemName));
                     errorSB.append(String.format("\t\t%s", t.getMessage()));
@@ -62,8 +58,8 @@ public class ConfigurationManager {
         return instance;
     }
 
-    public ConfigItem getConfig(String itemName) {
-        return configurationItems.get(itemName);
+    public <T> T getConfig(String itemName, Class<T> asClass) {
+        return asClass.cast(configurationItems.get(itemName));
     }
 
 

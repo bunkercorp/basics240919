@@ -29,8 +29,8 @@ public final class LoginPage extends pages.AbstractPage {
     }
 
     public void login() {
-        final String username = ConfigurationManager.getInstance().getConfig("jiraUser").asString();
-        final String password = ConfigurationManager.getInstance().getConfig("jiraPwd").asString();
+        final String username = ConfigurationManager.getInstance().getConfig("jiraUser", String.class);
+        final String password = ConfigurationManager.getInstance().getConfig("jiraPwd", String.class);
 
         storedDriver.findElement(selectors.get("unameInput")).sendKeys(username);
         storedDriver.findElement(selectors.get("pwdInput")).sendKeys(password);

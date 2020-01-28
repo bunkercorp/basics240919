@@ -16,12 +16,12 @@ import org.testng.annotations.*;
 import java.net.MalformedURLException;
 
 public class ClassTask {
-    WebDriver driver = null;
-
-    @BeforeClass
-    public void beforeSuite() throws MalformedURLException {
-        driver = BrowserFactory.getDriver(Browser.CHROME);
-    }
+//    WebDriver driver = null;
+//
+//    @BeforeClass
+//    public void beforeSuite() throws MalformedURLException {
+//        driver = BrowserFactory.getDriver(Browser.CHROME);
+//    }
 
 
     private void goTicket(int key) {
@@ -73,15 +73,15 @@ public class ClassTask {
 //    }
 
 
-    @AfterTest
-    public void teardown() throws InterruptedException {
-        Thread.sleep(3000);
-    }
-
-    @AfterSuite
-    public void suiteTeardown() {
-        driver.quit();
-    }
+//    @AfterTest
+//    public void teardown() throws InterruptedException {
+//        Thread.sleep(3000);
+//    }
+//
+//    @AfterSuite
+//    public void suiteTeardown() {
+//        driver.quit();
+//    }
 
 
 }
