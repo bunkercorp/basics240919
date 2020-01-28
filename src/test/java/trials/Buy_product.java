@@ -1,7 +1,8 @@
 package trials;
 
 import infra.Browser;
-import infra.Browserfactory;
+import infra.BrowserFactory;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -16,7 +17,7 @@ public class Buy_product {
     float productPrice = 999;
     @Test
     public void byuProduct() throws InterruptedException {
-        final WebDriver driver = Browserfactory.getDriver(Browser.CHROME);
+        final WebDriver driver = BrowserFactory.getDriver();
         final JavascriptExecutor jexec = (JavascriptExecutor) driver;
         final String initialTab = driver.getWindowHandle();
 

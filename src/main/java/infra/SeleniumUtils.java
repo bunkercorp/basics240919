@@ -2,23 +2,22 @@ package infra;
 
 import org.openqa.selenium.WebDriver;
 
+import java.util.List;
 import java.util.Set;
 
 public class SeleniumUtils {
-    public static String switchToWindow(String windowTitle, WebDriver driver){
-        String windowHandler = null;
-        Set<String> knowHandlers = driver.getWindowHandles();
-        for (String candidate:knowHandlers){
-            driver.switchTo().window(candidate);
+    public static String switchToWindow(String windowTitle, WebDriver driver) {
+       // String windowHandler = null;
+        Set<String> knownHandlers = driver.getWindowHandles();
+        for (String candidateHandler : knownHandlers) {
+            driver.switchTo().window(candidateHandler);
             String candidateTitle = driver.getTitle();
-            if (candidateTitle.contentEquals(windowTitle)){
-                windowHandler = candidate;
-                break;
+            if (candidateTitle.contentEquals(windowTitle)) {
+                return  candidateHandler;
+
             }
         }
-
-
-        driver.getTitle();
-        return windowHandler;
+        return null;
     }
+
 }
