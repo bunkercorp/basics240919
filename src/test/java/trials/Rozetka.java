@@ -14,6 +14,11 @@ public class Rozetka {
     @Test
     public void firstTest() throws InterruptedException {
         // final WebDriver driver = Browserfactory.getDriver(Browser.CHROME);
+      /* ну вот... мы задавали имя браузера как параметр запуска мавен таски,
+      который пробрасывался дженкинсом, и который считывался в BrowserFactory,
+         то есть, нам уже не нужно было вызывать getDriver с параметром, BrowserFactory уже знала, что отдавать.
+         Спишу на невнимательность =)
+         */
         final WebDriver driver = Browserfactory.getDriver(Browser.FIREFOX);
         final JavascriptExecutor jexec = (JavascriptExecutor) driver;
         final String initialTab = driver.getWindowHandle();
@@ -27,14 +32,18 @@ public class Rozetka {
         inputSearch.sendKeys(name);
         String xpathSearchClick = "//button[@class='button button_color_green button_size_medium search-form__submit']";
         driver.findElement(By.xpath(xpathSearchClick)).click();
+        // что бы это могло значить? если охота подождать элемент, то ExpectedConditions в помощь же =)
         Thread.sleep(3000);
 
         String xpathGetName = driver.findElement(By.xpath("//span[@class='goods-tile__title']")).getAttribute("innerText").trim();
         String currentName = name;
         Assert.assertEquals(xpathGetName, currentName);
-
+/* какой грязный хак. Во-первых, String.format("//img[@title='%s ']", name) не?
+во вторых, задача стояла именно перебрать все карточки продуктов в поисках нужного, а не бить нужный точечно.
+*/
         String xpathProduct = "//img[@title='Погружной блендер Hilton SMS-8143 ']";
         driver.findElement(By.xpath(xpathProduct)).click();
+      // ExpectedConditions =)
         Thread.sleep(3000);
 
         String xpathGetNameProduct = driver.findElement(By.xpath("//h1[@class='product__title']")).getAttribute("innerText").trim();
@@ -42,6 +51,7 @@ public class Rozetka {
         Assert.assertEquals(xpathGetNameProduct, currentNameProduct);
 
         String xpathPrice2 = "//p[@class='product-prices__big product-prices__big_color_red']";
+        // .getText() ? хотя, тут как угодно.
         String xpathPrice = driver.findElement(By.xpath(xpathPrice2)).getAttribute("innerText").trim();
         xpathPrice = xpathPrice.substring(0, xpathPrice.length() - 1);
         float price = Float.parseFloat(xpathPrice);
@@ -67,6 +77,7 @@ public class Rozetka {
 
         String xpathCity = "//a[@class='header-cities__link link-dashed']";
         driver.findElement(By.xpath(xpathCity)).click();
+// захват элемента по тексту - ататай. По-хорошему ,следует захватить все кнопки с городами и в цикле определить нужную. 
         driver.findElement(By.xpath("//a[text()=' Одесса ']")).click();
         Thread.sleep(2000);
 
@@ -78,6 +89,7 @@ public class Rozetka {
         driver.findElement(By.xpath(xpathBasket)).click();
         Thread.sleep(3000);
 
+        // окей, украинская локализация? =)
         String xpathPlus = "//button[@aria-label='Добавить ещё один товар']";
         driver.findElement(By.xpath(xpathPlus)).click();
         Thread.sleep(2000);
