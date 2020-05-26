@@ -15,8 +15,8 @@ import java.util.function.Consumer;
 public class JiraIssuePoster {
 
     public final static class CannotCreateJiraIssueError extends Error {
-        public CannotCreateJiraIssueError(String msg) {
-            super(msg);
+        public CannotCreateJiraIssueError(List<String> errors) {
+            super("Cannot create an issue:\n\t" + String.join("\n\t", errors));
         }
     }
 
@@ -28,6 +28,11 @@ public class JiraIssuePoster {
             key = k;
             apiId = i;
         }
+
+        @Override
+        public String toString() {
+            return String.format("%s (%d)", key, apiId);
+        }
     }
 
     private final static String creds = String.format("%s:%s",
@@ -35,23 +40,8 @@ public class JiraIssuePoster {
             ConfigurationManager.getInstance().getConfig("jiraPwd", String.class)
     );
 
-    private static String jSessionId = null;
 
-    static {
-        new HttpRequestComposer()
-                .auth(HttpRequestComposer.AuthType.BASIC, new Base64().encodeToString(creds.getBytes()))
-                .via(HttpRequestComposer.HTTPMethod.HEAD)
-                .fire("https://jira.hillel.it/").getResponseHeaders()
-                .get("Set-Cookie")
-                .stream()
-                .filter(cookieToSet -> cookieToSet.startsWith("JSESSIONID="))
-                .findFirst()
-                .ifPresent(s -> jSessionId = s
-                        .split(";")[0]
-                        .replace("JSESSIONID=", "")
-                        .trim());
-    }
-
+    private String jSessionId = null;
     private String description = null;
     private String projectKey = null;
     private int projectId = -1;
@@ -61,21 +51,23 @@ public class JiraIssuePoster {
     private List<String> labels = new ArrayList<>();
     private List<String> errors = new ArrayList<>();
 
-    private static void fireGet(String apiEndpoint, Consumer<String> onOk, Consumer<Integer> onNonOk) {
-        HttpRequestComposer.HttpResponse response = new HttpRequestComposer()
+    public JiraIssuePoster(String projectKey) {
+        new HttpRequestComposer()
                 .auth(HttpRequestComposer.AuthType.BASIC, new Base64().encodeToString(creds.getBytes()))
-                .setHeader("Cookie", String.format("JSESSIONID=%s", jSessionId))
-                .fire(String.format("https://jira.hillel.it/rest/api/2/%s", apiEndpoint));
-        if (response.resCode == 200) onOk.accept(response.resBody);
-        else onNonOk.accept(response.resCode);
+                .via(HttpRequestComposer.HTTPMethod.HEAD)
+                .fire("https://jira.hillel.it/").getResponseHeaders()
+                .get("Set-Cookie")
+                .stream()
+                .filter(cookieToSet -> cookieToSet.startsWith("JSESSIONID="))
+                .findFirst()
+                .ifPresentOrElse(s -> jSessionId = s
+                                .split(";")[0]
+                                .replace("JSESSIONID=", "")
+                                .trim(),
+                        () -> {
+                            throw new RuntimeException("Cannot obtain jSessionId");
+                        });
 
-    }
-
-    private static boolean assureNonDummy(String candidate) {
-        return candidate != null && !candidate.trim().isEmpty();
-    }
-
-    public JiraIssuePoster forProject(String projectKey) {
         fireGet("project",
                 (responseRaw) -> {
                     JSONArray projectsParsed = new JSONArray(responseRaw);
@@ -95,7 +87,21 @@ public class JiraIssuePoster {
                     errors.add(String.format("Cannot determine project id for %s due to HTTP related problems: res code %d", projectKey, rescode));
                     projectId = 0;
                 });
-        return this;
+    }
+
+
+    private void fireGet(String apiEndpoint, Consumer<String> onOk, Consumer<Integer> onNonOk) {
+        HttpRequestComposer.HttpResponse response = new HttpRequestComposer()
+                .auth(HttpRequestComposer.AuthType.BASIC, new Base64().encodeToString(creds.getBytes()))
+                .setHeader("Cookie", String.format("JSESSIONID=%s", jSessionId))
+                .fire(String.format("https://jira.hillel.it/rest/api/2/%s", apiEndpoint));
+        if (response.resCode == 200) onOk.accept(response.resBody);
+        else onNonOk.accept(response.resCode);
+
+    }
+
+    private static boolean assureNonDummy(String candidate) {
+        return candidate != null && !candidate.trim().isEmpty();
     }
 
     public JiraIssuePoster withPriority(String priorityFriendly) {
@@ -147,12 +153,15 @@ public class JiraIssuePoster {
 
     public JiraIssue create() {
         JiraIssue result = null;
+        boolean readyToPost = projectId > 0 && summary != null && issueType != null;
+
         if (summary == null)
             errors.add("Summary is either not set or only consists of whitespaces. Use summary().");
-        if (projectId == -1) errors.add("Project is not set. Use withProject().");
+
         if (issueType == null)
             errors.add("Issue type is not set. Use ofType().");
-        else if (projectId > 0) {
+
+         if (readyToPost) {
             final int[] issueTypeId = {-1};
             fireGet(String.format("project/%d", projectId),
                     (responseRaw) -> {
@@ -202,7 +211,7 @@ public class JiraIssuePoster {
             }
         }
         if (errors.size() > 0) {
-            throw new CannotCreateJiraIssueError("Cannot create an issue:\n\t" + String.join("\n\t", errors));
+            throw new CannotCreateJiraIssueError(errors);
         }
 
         return result;

@@ -17,8 +17,7 @@ public class PostJira {
         final String projectKey = "AQA919";
         final String summary = String.format("This issue has been automatically created at %s", new Date().toString());
 
-        JiraIssuePoster.JiraIssue postedIssue = new JiraIssuePoster()
-                .forProject(projectKey)
+        JiraIssuePoster.JiraIssue postedIssue = new JiraIssuePoster(projectKey)
                 .label("lorem")
                 .ofType("Bug")
                 .summary(summary)
